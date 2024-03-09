@@ -113,7 +113,7 @@ const getUserChanDetails = async (userChannels) => {
     myHeaders.append("device_details", "{\"pl\":\"web\",\"os\":\"Linux\",\"lo\":\"en-us\",\"app\":\"1.36.35\",\"dn\":\"PC\",\"bv\":101,\"bn\":\"CHROME\",\"device_id\":\"b70f9d50a3ea9cc7b77d4f1e04c41706\",\"device_type\":\"WEB\",\"device_platform\":\"PC\",\"device_category\":\"open\",\"manufacturer\":\"Linux_CHROME_101\",\"model\":\"PC\",\"sname\":\"\"}");
     myHeaders.append("locale", "ENG");
     myHeaders.append("origin", "https://watch.tataplay.com");
-    // myHeaders.append("platform", "web");
+    myHeaders.append("platform", "web");
     myHeaders.append("referer", "https://watch.tataplay.com/");
     myHeaders.append("sec-fetch-dest", "empty");
     myHeaders.append("sec-fetch-mode", "cors");
@@ -178,6 +178,106 @@ const generateM3u = async (ud) => {
                         {
                             "epid": "Subscription",
                             "bid": "1000000001"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "0000000000"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000101"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000105"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000220"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000223"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000431"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000984"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000998"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001001"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001011"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001065"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001139"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001173"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001178"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001208"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001247"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001258"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001274"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001275"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001276"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001368"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001382"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001384"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001385"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001839"
                         },
                         {
                             "epid": "Subscription",
