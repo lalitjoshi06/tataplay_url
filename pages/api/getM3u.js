@@ -7,9 +7,9 @@ export default async function handler(req, res) {
         id: req.query.id,
         sName: req.query.sname,
         token: req.query.tkn,
-        tsActive: true
+        ent: req.query.ent.split('_'),
+        tsActive: req.query.sid.split('_')[1] === "D" ? false : true
     };
-
     if (uData.tsActive) {
         let m3uString = await generateM3u(uData);
         res.status(200).send(m3uString);
@@ -19,8 +19,9 @@ export default async function handler(req, res) {
 }
 
 
-import { all } from "axios";
 import fetch, { Headers } from "cross-fetch";
+import { replacestrings } from './stringreplace';
+const { filterChannels } = require('./channelfilter');
 // const baseUrl = "https://kong-tatasky.videoready.tv";
 const baseUrl = "https://tm.tapi.videoready.tv";
 
@@ -32,7 +33,7 @@ const getAllChans = async () => {
     let err = null;
     let res = null;
 
-    await fetch("https://ts-api.videoready.tv/content-detail/pub/api/v1/channels?limit=700", requestOptions)
+    await fetch("https://ts-api.videoready.tv/content-detail/pub/api/v1/channels?limit=999", requestOptions)
         .then(response => response.text())
         .then(result => res = JSON.parse(result))
         .then(r => r)
@@ -57,7 +58,7 @@ const getJWT = async (params, uDetails) => {
         'kp': 'false',
         'locale': 'ENG',
         'origin': 'https://watch.tataplay.com',
-        'platform': 'web',
+        'platform': 'mobile',
         'profileid': uDetails.id,
         'referer': 'https://watch.tataplay.com/',
         'sec-fetch-dest': 'empty',
@@ -91,6 +92,10 @@ const getJWT = async (params, uDetails) => {
         // Promise.all(params.epids.map(x => { return { action: "stream", epids: [ {  } ] } }))
         const response = await fetch(baseUrl + "/auth-service/v1/oauth/token-service/token", requestOptions);
         result = await response.json();
+        if(result?.message.toLowerCase().indexOf("API Rate Limit Exceeded".toLowerCase()) > -1)
+            // throw new Error(result.message)
+            // return Promise.reject(new Error(result.message + 'nooooooo'));
+            return { retry: true };
     }
     catch (error) {
         console.log('error: ', error);
@@ -113,7 +118,7 @@ const getUserChanDetails = async (userChannels) => {
     myHeaders.append("device_details", "{\"pl\":\"web\",\"os\":\"Linux\",\"lo\":\"en-us\",\"app\":\"1.36.35\",\"dn\":\"PC\",\"bv\":101,\"bn\":\"CHROME\",\"device_id\":\"b70f9d50a3ea9cc7b77d4f1e04c41706\",\"device_type\":\"WEB\",\"device_platform\":\"PC\",\"device_category\":\"open\",\"manufacturer\":\"Linux_CHROME_101\",\"model\":\"PC\",\"sname\":\"\"}");
     myHeaders.append("locale", "ENG");
     myHeaders.append("origin", "https://watch.tataplay.com");
-    // myHeaders.append("platform", "web");
+    myHeaders.append("platform", "mobile");
     myHeaders.append("referer", "https://watch.tataplay.com/");
     myHeaders.append("sec-fetch-dest", "empty");
     myHeaders.append("sec-fetch-mode", "cors");
@@ -129,97 +134,88 @@ const getUserChanDetails = async (userChannels) => {
     let err = null;
     let result = [];
 
-   let chanIds = userChannels.map(x => x.id);
-await fetch("https://raw.githubusercontent.com/ForceGT/Tata-Sky-IPTV/master/code_samples/allChannels.json")
-    .then(response => response.json())
-    .then(cData => result.push(...cData))
-    .catch(error => {
-        console.log('error: ', error);
-        err = error;
-    });
+    let chanIds = userChannels.map(x => x.id);
+    let chanIdsStr = '';
 
-if (result.length > 0)
-    err = null;
+    while (chanIds.length > 0) {
+        chanIdsStr = chanIds.splice(0, 99).join(',');
+        await fetch("https://tm.tapi.videoready.tv/content-detail/pub/api/v1/live-tv-genre/channels?genre=&language=&channelIds=" + chanIdsStr, requestOptions)
+            .then(response => response.json())
+            .then(cData => result.push(...cData.data.liveChannels))
+            .catch(error => {
+                console.log('error: ', error);
+                err = error;
+            });
+    }
 
-let obj = { err };
-if (err === null)
-    obj.list = result;
-return obj;
+    if (result.length > 0)
+        err = null;
+
+    let obj = { err };
+    if (err === null)
+        obj.list = result;
+    return obj;
 }
 
 const generateM3u = async (ud) => {
     let errs = [];
     // let userEnt = theUser.entitlements.map(x => x.pkgId);
-
+    let ent = ud.ent;
+    let userChans = [];
     let allChans = await getAllChans();
-    //console.log(allChans.list.length);
-    if (allChans.err != null)
+    if (allChans.err === null) {
+        userChans = allChans.list.filter(x => x.entitlements.some(y => ent.includes(y)));
+        //console.log(userChans);
+    }
+    else
         errs.push(allChans.err);
     if (errs.length === 0) {
-        let userChanDetails = await getUserChanDetails(allChans.list);
-
+        let userChanDetails = await getUserChanDetails(userChans);
+        userChanDetails.list = filterChannels(userChanDetails.list);
         let m3uStr = '';
         if (userChanDetails.err === null) {
-            let chansList = userChanDetails.list
-            console.log(JSON.stringify(chansList.length));
+            let chansList = userChanDetails.list;
+            //console.log(chansList);
             let jwtTokens = [];
             if (chansList.length > 0) {
-                //m3uStr = '#EXTM3U    x-tvg-url="http://botallen.live/epg.xml.gz"\n\n';4
-                m3uStr = '#EXTM3U    x-tvg-url="https://github.com/mitthu786/tvepg/blob/main/tataplay/epg.xml.gz"\n\n';
-                let chanJwt;
-                let paramsForJwt = {
-                    "action": "stream",
-                    "epids": [
-                        {
-                            "epid": "Subscription",
-                            "bid": "1000000001"
-                        },
-                        {
-                            "epid": "Subscription",
-                            "bid": "1000001523"
-                        },
-                        {
-                            "epid": "Subscription",
-                            "bid": "1000001038"
-                        },
-                        {
-                            "epid": "Subscription",
-                            "bid": "1000001035"
-                        },
-                        {
-                            "epid": "Subscription",
-                            "bid": "1000000033"
-                        },
-                        {
-                            "epid": "Subscription",
-                            "bid": "1000000002"
-                        },
-                        {
-                            "epid": "Subscription",
-                            "bid": "1000000003"
+                m3uStr = '#EXTM3U x-tvg-url="https://www.tsepg.cf/epg.xml.gz"\n\n';
+                for (let i = 0; i < chansList.length; i++) {
+                    const chanEnts = chansList[i].detail.entitlements.filter(val => ent.includes(val));
+                    if (chanEnts.length > 0) {
+                        let chanJwt = jwtTokens.find(x => x.ents.sort().toString() === chanEnts.sort().toString())?.token;
+                        if (!chanJwt) {
+                            let paramsForJwt = { action: "stream" };
+                            paramsForJwt.epids = chanEnts.map(x => { return { epid: "Subscription", bid: x } });
+                            console.log(paramsForJwt);
+                            chanJwt = await getJWT(paramsForJwt, ud);
+                            while (chanJwt.retry) {
+                                chanJwt = await getJWT(paramsForJwt, ud);
+                            }
+                            chanJwt = chanJwt.token;
+                            jwtTokens.push({
+                                ents: chanEnts,
+                                token: chanJwt
+                            });
                         }
-                    ]
-                };
-                console.log(paramsForJwt);
-                chanJwt = await getJWT(paramsForJwt, ud);
-                chanJwt = chanJwt.token;
-                 for (let i = 0; i < chansList.length; i++) {
-            m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].channel_id.toString() + '" ';
-            m3uStr += 'tvg-logo="' + chansList[i].channel_logo + '" ';
-            m3uStr += 'group-title="' + chansList[i].channel_genre + '", ' + chansList[i].channel_name + '\n';
-            m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha\n';
-            m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].channel_license_url + '&ls_session=';
-            m3uStr += chanJwt + '\n';
-            m3uStr += chansList[i].channel_url + '\n\n';
-        }
-        console.log('all done!');
-    } else {
-        m3uStr = "Could not get channels. Try again later.";
-    }
-} else {
-    m3uStr = userChanDetails.err ? userChanDetails.err.toString() : "Could not get channels. Try again later.";
-}
+                        m3uStr += '#EXTINF:-1  tvg-id=\"' + chansList[i].channelMeta.id.toString() + '\"  ';
+                        //m3uStr += 'tvg-logo=\"' + chansList[i].channelMeta.logo + '\"   ';
+                        m3uStr += 'group-title=\"' + (chansList[i].channelMeta.genre[0] !== "HD" ? chansList[i].channelMeta.genre[0] : chansList[i].channelMeta.genre[1]) + '\",   ' + chansList[i].channelMeta.channelName + '\n';
+                        m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha' + '\n';
+                        m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
+                        m3uStr += chanJwt + '\n';
+                        //m3uStr += chansList[i].detail.dashWidewinePlayUrl + '\n\n';
+                        const playUrl = replacestrings(chansList[i].detail.dashWidewinePlayUrl);
+                        m3uStr += playUrl + '\n\n';
 
-return m3uStr;
+                    }
+                }
+                console.log('all done!');
+            }
+            else
+                m3uStr = "Could not get channels. Try again later.";
+        }
+        else
+            m3uStr = userChanDetails.err.toString();
+        return m3uStr;
     }
 }
