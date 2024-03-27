@@ -1,5 +1,4 @@
 const replacements = {
-    "linear": "catchup",
     "https://bpprod1live.akamaized.net/bpk-tv/irdeto_com_Channel_387/output/manifest.mpd": "https://bpprod4catchup.akamaized.net/bpk-tv/irdeto_com_Channel_387/output/manifest.mpd",
     "https://bpprod7catchup.akamaized.net/bpk-tv/irdeto_com_Channel_257/output/manifest.mpd": "https://beta-ts-sable.vercel.app/index.mpd?id=8",
     "https://bpprod7catchup.akamaized.net/bpk-tv/irdeto_com_Channel_380/output/manifest.mpd": "https://beta-ts-sable.vercel.app/index.mpd?id=12",
