@@ -210,8 +210,7 @@ const generateM3u = async (ud) => {
             m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha\n';
             m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].channel_license_url + '&ls_session=';
             m3uStr += chanJwt + '\n';
-                     const playUrl = replacestrings(chansList[i].channel_url);
-            m3uStr += playUrl + '\n\n';
+            m3uStr += chansList[i].channel_url + '\n\n';
         }
         console.log('all done!');
     } else {
