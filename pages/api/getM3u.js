@@ -131,7 +131,7 @@ const getUserChanDetails = async (userChannels) => {
     let result = [];
 
    let chanIds = userChannels.map(x => x.id);
-await fetch("https://raw.githubusercontent.com/ForceGT/Tata-Sky-IPTV/master/code_samples/allChannels.json")
+await fetch("https://raw.githubusercontent.com/mitthu786/tvepg/main/tataplay/tsdata.json")
     .then(response => response.json())
     .then(cData => result.push(...cData))
     .catch(error => {
