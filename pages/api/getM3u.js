@@ -201,9 +201,19 @@ const generateM3u = async (ud) => {
                         }
                     ]
                 };
-                console.log(paramsForJwt);
-                chanJwt = await getJWT(paramsForJwt, ud);
-                chanJwt = chanJwt.token;
+               if (ud.ent.length === 1) {
+                                paramsForJwt.epids = [{ epid: "Subscription", bid: ud.ent[0] }];
+                            } else {
+                                paramsForJwt.epids = ud.ent.map(ent => ({ epid: "Subscription", bid: ent }));
+                            }
+                            let jwtResult = await getJWT(paramsForJwt, ud);
+                            chanJwt = jwtResult.token;
+
+                            jwtTokens.push({
+                                ents: chanEnts,
+                                token: chanJwt
+                            });
+                        }
                  for (let i = 0; i < chansList.length; i++) {
             m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].channel_id.toString() + '" ';
             m3uStr += 'tvg-logo="' + chansList[i].channel_logo + '" ';
