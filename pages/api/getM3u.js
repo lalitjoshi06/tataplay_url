@@ -213,8 +213,7 @@ const generateM3u = async (ud) => {
                                 ents: chanEnts,
                                 token: chanJwt
                             });
-                        }
-                 for (let i = 0; i < chansList.length; i++) {
+                        }                 
             m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].channel_id.toString() + '" ';
             m3uStr += 'tvg-logo="' + chansList[i].channel_logo + '" ';
             m3uStr += 'group-title="' + chansList[i].channel_genre + '", ' + chansList[i].channel_name + '\n';
