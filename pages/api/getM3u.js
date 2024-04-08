@@ -161,30 +161,50 @@ const generateM3u = async (ud) => {
 
           let m3uStr = '';
         if (userChanDetails.err === null) {
-            let chansList = userChanDetails.list;
-            //console.log(chansList);
+            let chansList = userChanDetails.list
+            console.log(JSON.stringify(chansList.length));
             let jwtTokens = [];
             if (chansList.length > 0) {
-                m3uStr = '#EXTM3U x-tvg-url="https://www.tsepg.cf/epg.xml.gz"\n\n';
+                //m3uStr = '#EXTM3U    x-tvg-url="http://botallen.live/epg.xml.gz"\n\n';4
+                m3uStr = '#EXTM3U    x-tvg-url="https://github.com/mitthu786/tvepg/blob/main/tataplay/epg.xml.gz"\n\n';
+                let chanJwt;
+                let paramsForJwt = {
+                    "action": "stream",
+                    "epids": [
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000001"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001523"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001038"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000001035"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000033"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000002"
+                        },
+                        {
+                            "epid": "Subscription",
+                            "bid": "1000000003"
+                         }
+                    ]
+                };
+                console.log(paramsForJwt);
+                chanJwt = await getJWT(paramsForJwt, ud);
+                chanJwt = chanJwt.token;
                 for (let i = 0; i < chansList.length; i++) {
-                    const chanEnts = chansList[i].detail.entitlements.filter(val => ent.includes(val));
-                    if (chanEnts.length > 0) {
-                        let chanJwt = jwtTokens.find(x => x.ents.sort().toString() === chanEnts.sort().toString())?.token;
-                        if (!chanJwt) {
-                            let paramsForJwt = { action: "stream" };
-                            if (ud.ent.length === 1) {
-                                paramsForJwt.epids = [{ epid: "Subscription", bid: ud.ent[0] }];
-                            } else {
-                                paramsForJwt.epids = ud.ent.map(ent => ({ epid: "Subscription", bid: ent }));
-                            }
-                            let jwtResult = await getJWT(paramsForJwt, ud);
-                            chanJwt = jwtResult.token;
-
-                            jwtTokens.push({
-                                ents: chanEnts,
-                                token: chanJwt
-                            });
-                        }                
             m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].channel_id.toString() + '" ';
             m3uStr += 'tvg-logo="' + chansList[i].channel_logo + '" ';
             m3uStr += 'group-title="' + chansList[i].channel_genre + '", ' + chansList[i].channel_name + '\n';
