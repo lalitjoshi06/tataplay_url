@@ -217,7 +217,7 @@ const generateM3u = async (ud) => {
                         m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
                         m3uStr += chanJwt + '\n';
             //m3uStr += chansList[i].channel_url + '\n\n';
-           //m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?contentID=${chansList[i].channel_id}`) + '\n\n';
+           m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?contentID=${chansList[i].channel_id}`) + '\n\n';
                     //m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?ID=${chansList[i].channelMeta.id}`) + '\n\n';
 					m3uStr += replacestrings(`https://tp.snehiptv-s6.workers.dev/${chansList[i].channelMeta.id}.mpd`) + '\n\n';					
         }
