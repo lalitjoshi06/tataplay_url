@@ -130,14 +130,19 @@ const getUserChanDetails = async (userChannels) => {
     let err = null;
     let result = [];
 
-   let chanIds = userChannels.map(x => x.id);
-await fetch("https://raw.githubusercontent.com/mitthu786/tvepg/main/tataplay/tsdata.json")
-    .then(response => response.json())
-    .then(cData => result.push(...cData))
-    .catch(error => {
-        console.log('error: ', error);
-        err = error;
-    });
+     let chanIds = userChannels.map(x => x.id);
+    let chanIdsStr = '';
+
+    while (chanIds.length > 0) {
+        chanIdsStr = chanIds.splice(0, 99).join(',');
+        await fetch("https://tm.tapi.videoready.tv/content-detail/pub/api/v1/live-tv-genre/channels?genre=&language=&channelIds=" + chanIdsStr, requestOptions)
+            .then(response => response.json())
+            .then(cData => result.push(...cData.data.liveChannels))
+            .catch(error => {
+                console.log('error: ', error);
+                err = error;
+            });
+    }
 
 if (result.length > 0)
     err = null;
@@ -205,15 +210,16 @@ const generateM3u = async (ud) => {
                 chanJwt = await getJWT(paramsForJwt, ud);
                 chanJwt = chanJwt.token;
                 for (let i = 0; i < chansList.length; i++) {
-            m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].channel_id.toString() + '" ';
-            m3uStr += 'tvg-logo="' + chansList[i].channel_logo + '" ';
-            m3uStr += 'group-title="' + chansList[i].channel_genre + '", ' + chansList[i].channel_name + '\n';
-            m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha\n';
-            m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].channel_license_url + '&ls_session=';
-            m3uStr += chanJwt + '\n';
+             m3uStr += '#EXTINF:-1  tvg-id=\"' + chansList[i].channelMeta.id.toString() + '\"  ';
+                        //m3uStr += 'tvg-logo=\"' + chansList[i].channelMeta.logo + '\"   ';
+                        m3uStr += 'group-title=\"' + (chansList[i].channelMeta.genre[0] !== "HD" ? chansList[i].channelMeta.genre[0] : chansList[i].channelMeta.genre[1]) + '\",   ' + chansList[i].channelMeta.channelName + '\n';
+                        m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha' + '\n';
+                        m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
+                        m3uStr += chanJwt + '\n';
             //m3uStr += chansList[i].channel_url + '\n\n';
-           m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?contentID=${chansList[i].channel_id}`) + '\n\n';
-                    m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?ID=${chansList[i].channel_id}`) + '\n\n';
+           //m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?contentID=${chansList[i].channel_id}`) + '\n\n';
+                    //m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?ID=${chansList[i].channelMeta.id}`) + '\n\n';
+					m3uStr += replacestrings(`https://tp.snehiptv-s6.workers.dev/${chansList[i].channelMeta.id}.mpd}`) + '\n\n';					
         }
         console.log('all done!');
     } else {
