@@ -218,8 +218,8 @@ const generateM3u = async (ud) => {
                         m3uStr += chanJwt + '\n';
             //m3uStr += chansList[i].channel_url + '\n\n';
                                //m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?ID=${chansList[i].channelMeta.id}`) + '\n\n';
-					m3uStr += replacestrings(`https://tp.snehiptv-s6.workers.dev/${chansList[i].channelMeta.id}.mpd`) + '\n\n';
-			m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?contentID=${chansList[i].channelMeta.id}`) + '\n\n';
+					m3uStr += replacestrings(`https://tp.snehiptv-s7.workers.dev/${chansList[i].channelMeta.id}.mpd`) + '\n\n';
+			m3uStr += replacestrings(`https://tp.snehiptv-s8.workers.dev/${chansList[i].channelMeta.id}.mpd`) + '\n\n';
 			
         }
         console.log('all done!');
