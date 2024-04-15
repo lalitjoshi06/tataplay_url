@@ -240,30 +240,25 @@ useEffect(() => {
                 <Grid.Column computer={8} tablet={12} mobile={16}>
                   <Segment loading={loading}>
                     <Header as="h1">Welcome, {theUser.sName}</Header>
-                    {
-                      theUser !== null ?
-                          <Message>
-                            <Message.Header>Dynamic URL to get m3u: </Message.Header>
-                            {/* <Image centered src={'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(m3uMeta.url)} size='small' /> */}
-                            <p>
-                              <a href={dynamicUrl}>{dynamicUrl}</a>
-                            </p>
-                            <p>
-                              You can use the above m3u URL in OTT Navigator or Tivimate app to watch all your subscribed channels.
-                            </p>
-                            <p>
-                              The generated m3u URL is for permanent use and is not required to be refreshed every 24 hours. Enjoy!
-                            </p>
-                            <Message.Header>You cannot generate a permanent m3u file URL on localhost but you can download your m3u file: </Message.Header>
-                            <p></p>
-                            <p>
-                            <Button loading={downloading} primary onClick={() => downloadM3uFile('ts.m3u')}>Download m3u file</Button>
-                            </p>
-                            <p>The downloaded m3u file will be valid only for 24 hours.</p>
-                          </Message>
-                        :
-                        <Header as='h3' style={{ color: 'red' }}>Your Tata Sky User not found.</Header>
-                    }
+                   <Message>
+  <Message.Header>Dynamic URL to get m3u: </Message.Header>
+  {/* <Image centered src={'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(m3uMeta.url)} size='small' /> */}
+  <p>
+    <a href={dynamicUrl}>{dynamicUrl}</a>
+  </p>
+  <p>
+    You can use the above m3u URL in OTT Navigator or Tivimate app to watch all your subscribed channels.
+  </p>
+  <p>
+    The generated m3u URL is for permanent use and is not required to be refreshed every 24 hours. Enjoy!
+  </p>
+  <Message.Header>You cannot generate a permanent m3u file URL on localhost but you can download your m3u file: </Message.Header>
+  <p></p>
+  <p>
+    <Button loading={downloading} primary onClick={() => downloadM3uFile('ts.m3u')}>Download m3u file</Button>
+  </p>
+  <p>The downloaded m3u file will be valid only for 24 hours.</p>
+</Message>
 
                     <Button negative onClick={logout}>Logout</Button>
                   </Segment>
