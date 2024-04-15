@@ -32,34 +32,33 @@ export default function Home() {
 
 
 useEffect(() => {
-    if (theUser !== null) {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer 59f9ccb6a5267192ea34877b62126cb7f991faca");
-      myHeaders.append("Content-Type", "application/json");
-      console.log('mko');
-      console.log(process.env.REACT_APP_M3U_FUNCTION_BASE_URL);
-      var raw = JSON.stringify({
+    // Create headers for the request
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer 59f9ccb6a5267192ea34877b62126cb7f991faca");
+    myHeaders.append("Content-Type", "application/json");
+    
+    // Construct the request body
+    var raw = JSON.stringify({
         "long_url": window.location.origin.replace('localhost', '127.0.0.1') + '/api/getM3u?sid=' + theUser.sid + '_' + 'A'+ '&id=' + theUser.id + '&sname=' + theUser.sName +'&tkn=' + token
-      });
+    });
 
-      var requestOptions = {
+    // Set request options
+    var requestOptions = {
         method: 'POST',
         headers: myHeaders,
         body: raw,
         redirect: 'follow'
-      };
+    };
 
-      fetch("https://api-ssl.bitly.com/v4/shorten", requestOptions)
+    // Make a POST request to shorten the URL
+    fetch("https://api-ssl.bitly.com/v4/shorten", requestOptions)
         .then(response => response.text())
         .then(result => {
-          console.log(result);
-          setDynamicUrl(JSON.parse(result).link);
+            // Parse the response and set the shortened URL
+            setDynamicUrl(JSON.parse(result).link);
         })
         .catch(error => console.log('error', error));
-    }
-
-
-  }, [theUser, token])
+}, [theUser, token]);
 
   const getOTP = () => {
     setLoading(true);
