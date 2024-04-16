@@ -210,14 +210,15 @@ const generateM3u = async (ud) => {
                 chanJwt = await getJWT(paramsForJwt, ud);
                 chanJwt = chanJwt.token;
                 for (let i = 0; i < chansList.length; i++) {
-             m3uStr += '#EXTINF:-1  tvg-id=\"' + chansList[i].channelMeta.id.toString() + '\"  ';
-                        //m3uStr += 'tvg-logo=\"' + chansList[i].channelMeta.logo + '\"   ';
-                        m3uStr += 'group-title=\"' + (chansList[i].channelMeta.genre[0] !== "HD" ? chansList[i].channelMeta.genre[0] : chansList[i].channelMeta.genre[1]) + '\",   ' + chansList[i].channelMeta.channelName + '\n';
-                        m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha' + '\n';
-                        m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
-                        m3uStr += chanJwt + '\n';
-			m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?id=${chansList[i].channelMeta.id}') + '\n\n';
-			m3uStr += replacestrings(`https://tp.snehiptv-s8.workers.dev/${chansList[i].channelMeta.id}.mpd`) + '\n\n';
+            m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].channelMeta.id.toString() + '" ';
+// m3uStr += 'tvg-logo="' + chansList[i].channelMeta.logo + '" ';
+m3uStr += 'group-title="' + (chansList[i].channelMeta.genre[0] !== "HD" ? chansList[i].channelMeta.genre[0] : chansList[i].channelMeta.genre[1]) + '", ';
+m3uStr += chansList[i].channelMeta.channelName + '\n';
+m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha' + '\n';
+m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
+m3uStr += chanJwt + '\n';
+m3uStr += replacestrings('https://beta-ts-sable.vercel.app/index.mpd?id=' + chansList[i].channelMeta.id) + '\n\n';
+m3uStr += replacestrings('https://tp.snehiptv-s8.workers.dev/' + chansList[i].channelMeta.id + '.mpd') + '\n\n';
 			//m3uStr += chansList[i].channel_url + '\n\n';
 			 //m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?ID=${chansList[i].channelMeta.id}`) + '\n\n';
 					
