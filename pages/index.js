@@ -24,42 +24,60 @@ export default function Home() {
   useEffect(() => {
     let tok = localStorage.getItem("token");
     let userd = localStorage.getItem("userDetails");
-    if (tok !== undefined && userd !== undefined) {
-      setToken(tok);
-      setUser(JSON.parse(userd));
+
+    // Check if token and user details are present in localStorage
+    if (tok !== null && userd !== null) {
+        setToken(tok);
+        setUser(JSON.parse(userd));
     }
-  }, []);
+}, []);
 
 
 useEffect(() => {
     if (theUser !== null) {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer 59f9ccb6a5267192ea34877b62126cb7f991faca");
-      myHeaders.append("Content-Type", "application/json");
-      console.log('mko');
-      console.log(process.env.REACT_APP_M3U_FUNCTION_BASE_URL);
-      var raw = JSON.stringify({
-        "long_url": window.location.origin.replace('localhost', '127.0.0.1') + '/api/getM3u?sid=' + theUser.sid + '_' + 'A'+ '&id=' + theUser.id + '&sname=' + theUser.sName +'&tkn=' + token
-      });
+        const url = window.location.origin.replace('localhost', '127.0.0.1') +
+            '/api/getM3u?sid=' + encodeURIComponent(theUser.sid) +
+            '_A&id=' + encodeURIComponent(theUser.id) +
+            '&sname=' + encodeURIComponent(theUser.sName) +
+            '&tkn=' + encodeURIComponent(token);
 
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-
-      fetch("https://api-ssl.bitly.com/v4/shorten", requestOptions)
-        .then(response => response.text())
-        .then(result => {
-          console.log(result);
-          setDynamicUrl(JSON.parse(result).link);
+        fetch("/api/shortenUrl", {
+            method: 'POST',
+            body: JSON.stringify({
+                longUrl: url
+            })
         })
-        .catch(error => console.log('error', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log(result);
+            if (result && result.data) {
+                const mydiv = document.createElement('div');
+                mydiv.innerHTML = result.data;
+                const shortenurl = mydiv.querySelector('#shortenurl');
+                if (shortenurl) {
+                    setDynamicUrl(shortenurl.value);
+                } else {
+                    console.error("Shorten URL not found in response data.");
+                }
+            } else {
+                console.error("Empty or invalid response data.");
+            }
+        })
+        .catch(error => console.error('Error fetching shortened URL:', error));
     }
 
+    // Cleanup code here if necessary
+    return () => {
+        // Cleanup code here if necessary
+    };
+}, [theUser, token]);
 
-  }, [theUser, token])
+
 
   const getOTP = () => {
     setLoading(true);
@@ -241,30 +259,25 @@ useEffect(() => {
                 <Grid.Column computer={8} tablet={12} mobile={16}>
                   <Segment loading={loading}>
                     <Header as="h1">Welcome, {theUser.sName}</Header>
-                    {
-                      theUser !== null ?
-                          <Message>
-                            <Message.Header>Dynamic URL to get m3u: </Message.Header>
-                            {/* <Image centered src={'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(m3uMeta.url)} size='small' /> */}
-                            <p>
-                              <a href={dynamicUrl}>{dynamicUrl}</a>
-                            </p>
-                            <p>
-                              You can use the above m3u URL in OTT Navigator or Tivimate app to watch all your subscribed channels.
-                            </p>
-                            <p>
-                              The generated m3u URL is for permanent use and is not required to be refreshed every 24 hours. Enjoy!
-                            </p>
-                            <Message.Header>You cannot generate a permanent m3u file URL on localhost but you can download your m3u file: </Message.Header>
-                            <p></p>
-                            <p>
-                            <Button loading={downloading} primary onClick={() => downloadM3uFile('ts.m3u')}>Download m3u file</Button>
-                            </p>
-                            <p>The downloaded m3u file will be valid only for 24 hours.</p>
-                          </Message>
-                        :
-                        <Header as='h3' style={{ color: 'red' }}>Your Tata Sky User not found.</Header>
-                    }
+                   <Message>
+  <Message.Header>Dynamic URL to get m3u: </Message.Header>
+  {/* <Image centered src={'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(m3uMeta.url)} size='small' /> */}
+  <p>
+    <a href={dynamicUrl}>{dynamicUrl}</a>
+  </p>
+  <p>
+    You can use the above m3u URL in OTT Navigator or Tivimate app to watch all your subscribed channels.
+  </p>
+  <p>
+    The generated m3u URL is for permanent use and is not required to be refreshed every 24 hours. Enjoy!
+  </p>
+  <Message.Header>You cannot generate a permanent m3u file URL on localhost but you can download your m3u file: </Message.Header>
+  <p></p>
+  <p>
+    <Button loading={downloading} primary onClick={() => downloadM3uFile('ts.m3u')}>Download m3u file</Button>
+  </p>
+  <p>The downloaded m3u file will be valid only for 24 hours.</p>
+</Message>
 
                     <Button negative onClick={logout}>Logout</Button>
                   </Segment>
