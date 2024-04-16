@@ -217,8 +217,9 @@ m3uStr += chansList[i].channelMeta.channelName + '\n';
 m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha' + '\n';
 m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
 m3uStr += chanJwt + '\n';
-m3uStr += replacestrings('https://beta-ts-sable.vercel.app/index.mpd?id=' + chansList[i].channelMeta.id) + '\n\n';
+//m3uStr += replacestrings('https://beta-ts-sable.vercel.app/index.mpd?id=' + chansList[i].channelMeta.id) + '\n\n';
 m3uStr += replacestrings('https://tp.snehiptv-s8.workers.dev/' + chansList[i].channelMeta.id + '.mpd') + '\n\n';
+m3uStr += replacestrings('https://tp.snehiptv-s7.workers.dev/' + chansList[i].channelMeta.id + '.mpd') + '\n\n';
 			//m3uStr += chansList[i].channel_url + '\n\n';
 			 //m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?ID=${chansList[i].channelMeta.id}`) + '\n\n';
 					
