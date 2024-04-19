@@ -218,7 +218,7 @@ m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha' + '\n
 m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
 m3uStr += chanJwt + '\n';
 //m3uStr += replacestrings('https://beta-ts-sable.vercel.app/index.mpd?id=' + chansList[i].channelMeta.id) + '\n\n';
-m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?contentID=${chansList[i].channelMeta.id}`) + '\n\n';
+m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?ID=${chansList[i].channelMeta.id}`) + '\n\n';
 m3uStr += replacestrings('https://toxicify.pro/peace/kfc/' + chansList[i].channelMeta.id + '.mpd') + '\n\n';
 //m3uStr += replacestrings('https://tp.snehiptv-s7.workers.dev/' + chansList[i].channelMeta.id + '.mpd') + '\n\n';
 			//m3uStr += chansList[i].channel_url + '\n\n';
