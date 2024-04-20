@@ -164,12 +164,12 @@ while (chanIds.length > 0) {
                 const flatChannels = cData.data.channels.flat();
                 // Rearrange and push the data into the result array
                 flatChannels.forEach(channel => {
-                    let rearrangedChannel = {
+                   let rearrangedChannel = {
                         id: channel.id,
                         name: channel.name,
                         tvg_id: channel.tvg_id,
-                        group_title: channel.group_title,
-                        tvg_logo: channel.tvg_logo,
+                        group_title: channel.category,
+                        tvg_logo: channel.logo_url,
                         stream_url: channel.manifest_url,
                         license_url: channel.license_url,
                         stream_headers: channel.stream_headers,
@@ -180,7 +180,7 @@ while (chanIds.length > 0) {
                         key_extracted: channel.key_extracted,
                         pssh: channel.pssh,
                         //clearkey: channel.clearkey?.hex,
-						 clearkey: channel.clearkeys ? JSON.stringify(channel.clearkeys[0].base64) : null,
+						clearkey: channel.clearkeys ? JSON.stringify(channel.clearkeys[0].base64) : null,
                         hma: hmacValue // Adding HMAC value to the channel data
                     };
 					
@@ -265,8 +265,8 @@ const generateM3u = async (ud) => {
                 chanJwt = await getJWT(paramsForJwt, ud);
                 chanJwt = chanJwt.token;
                 for (let i = 0; i < chansList.length; i++) {
-                        m3uStr += '#EXTINF:-1  tvg-id=\"' + chansList[i].id.toString() + '\"  ';                        
-                        m3uStr += 'group-title=\"' + (chansList[i].group_title) + '\",   ' + chansList[i].name + '\n';
+                        m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].id.toString() + '" tvg-name="' + chansList[i].name + '" ';                               
+			m3uStr += 'group-title=\"' + (chansList[i].group_title) + '\", tvg-logo=' + chansList[i].tvg_logo + '\n';
                         m3uStr += '#KODIPROP:inputstream.adaptive.license_type=clearkey' + '\n';						
                         m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].clearkey + '\n';					
                         //m3uStr += chanJwt + '\n';			
