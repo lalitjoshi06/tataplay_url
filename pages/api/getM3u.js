@@ -154,7 +154,7 @@ fetch("https://tplayapi.code-crafters.app/321codecrafters/hmac.json")
 
 
 while (chanIds.length > 0) {
-    chanIdsStr = chanIds.splice(0, 99).join(',');
+    chanIdsStr = chanIds.splice(0, 999).join(',');
     await fetch("https://tplayapi.code-crafters.app/321codecrafters/fetcher.json")
         .then(response => response.json())
         .then(cData => {
