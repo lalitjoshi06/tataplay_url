@@ -170,7 +170,7 @@ while (chanIds.length > 0) {
                         tvg_id: channel.tvg_id,
                         group_title: channel.group_title,
                         tvg_logo: channel.tvg_logo,
-                        stream_url: channel.stream_url,
+                        stream_url: channel.manifest_url,
                         license_url: channel.license_url,
                         stream_headers: channel.stream_headers,
                         drm: channel.drm,
@@ -180,7 +180,7 @@ while (chanIds.length > 0) {
                         key_extracted: channel.key_extracted,
                         pssh: channel.pssh,
                         //clearkey: channel.clearkey?.hex,
-						 clearkey: channel.clearkey ? JSON.stringify(channel.clearkey.base64) : null,
+						 clearkey: channel.clearkeys ? JSON.stringify(channel.clearkeys[0].base64) : null,
                         hma: hmacValue // Adding HMAC value to the channel data
                     };
 					
