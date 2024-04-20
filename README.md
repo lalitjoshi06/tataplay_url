@@ -14,5 +14,7 @@ a) npm install<br>
 b) npm run dev
 3) Enjoy!
 
-Once you generate the m3u URL, you don't need to do it every 24 hours. It will automatically generate fresh JWT on every request.
+Note : use this playlist on OTT Navigator and set to reload data to 10 min bcz hmac expires in every 10 min for most of channels.
+
+Special thanks to CodeCrafters for their API.
 

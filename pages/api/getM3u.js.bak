@@ -127,96 +127,29 @@ const getUserChanDetails = async (userChannels) => {
         headers: myHeaders
     };
 
- let err = null;
-let result = [];
+    let err = null;
+    let result = [];
 
-let chanIds = userChannels.map(x => x.id);
-let chanIdsStr = '';
+     let chanIds = userChannels.map(x => x.id);
+    let chanIdsStr = '';
 
-// Fetch HMAC value
-let hmacValue;
-let hmacData = await fetch("https://tplayapi.code-crafters.app/321codecrafters/hmac.json")
-    .then(response => response.json())
-    .then(data => {
-        let hdneaValue = data.data.hmac.hdnea.value;
-        hmacValue = hdneaValue.replace(/"/g, ''); // Remove double quotes from the value
-        return {
-            type: "TATAPLAY HMAC API",
-            author: "Team CodeCrafters",
-            community: "https://t.me/realcodecrafters",
-            data: {
-                hmac: {
-                    hdnea: {
-                        value: hdneaValue,
-                        validity: "10 minutes"
-                    },
-                    hdtl: {
-                        value: data.data.hmac.hdtl.value,
-                        validity: "24 Hours"
-                    }
-                }
-            }
-        };
-    })
-    .catch(error => {
-        console.error('Error fetching and rearranging HMAC data:', error);
-        err = error;
-    });
-// Now hmacValue contains the hdnea value as a string
+    while (chanIds.length > 0) {
+        chanIdsStr = chanIds.splice(0, 99).join(',');
+        await fetch("https://tm.tapi.videoready.tv/content-detail/pub/api/v1/live-tv-genre/channels?genre=&language=&channelIds=" + chanIdsStr, requestOptions)
+            .then(response => response.json())
+            .then(cData => result.push(...cData.data.liveChannels))
+            .catch(error => {
+                console.log('error: ', error);
+                err = error;
+            });
+    }
 
-
-while (chanIds.length > 0) {
-    chanIdsStr = chanIds.splice(0, 99).join(',');
-    await fetch("https://tplayapi.code-crafters.app/321codecrafters/fetcher.json")
-        .then(response => response.json())
-        .then(cData => {
-            // Check if the response has the expected structure
-            if (cData && cData.data && Array.isArray(cData.data.channels)) {
-                // Flatten the array of arrays
-                const flatChannels = cData.data.channels.flat();
-                // Rearrange and push the data into the result array
-                flatChannels.forEach(channel => {
-                    let rearrangedChannel = {
-                        id: channel.id,
-                        name: channel.name,
-                        tvg_id: channel.tvg_id,
-                        group_title: channel.group_title,
-                        tvg_logo: channel.tvg_logo,
-                        stream_url: channel.stream_url,
-                        license_url: channel.license_url,
-                        stream_headers: channel.stream_headers,
-                        drm: channel.drm,
-                        is_mpd: channel.is_mpd,
-                        kid_in_mpd: channel.kid_in_mpd,
-                        hmac_required: channel.hmac_required,
-                        key_extracted: channel.key_extracted,
-                        pssh: channel.pssh,
-                        //clearkey: channel.clearkey?.hex,
-						 clearkey: channel.clearkey ? JSON.stringify(channel.clearkey.base64) : null,
-                        hma: hmacValue // Adding HMAC value to the channel data
-                    };
-					
-                    result.push(rearrangedChannel);
-                });
-            } else {
-                console.error('Invalid data structure or channels is not an array:', cData);
-                err = 'Invalid data structure';
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            err = error;
-        });
-}
-
-if (result.length > 0) {
+if (result.length > 0)
     err = null;
-}
 
 let obj = { err };
-if (err === null) {
+if (err === null)
     obj.list = result;
-}
 return obj;
 }
 
@@ -277,12 +210,20 @@ const generateM3u = async (ud) => {
                 chanJwt = await getJWT(paramsForJwt, ud);
                 chanJwt = chanJwt.token;
                 for (let i = 0; i < chansList.length; i++) {
-                        m3uStr += '#EXTINF:-1  tvg-id=\"' + chansList[i].id.toString() + '\"  ';                        
-                        m3uStr += 'group-title=\"' + (chansList[i].group_title) + '\",   ' + chansList[i].name + '\n';
-                        m3uStr += '#KODIPROP:inputstream.adaptive.license_type=clearkey' + '\n';						
-                        m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].clearkey + '\n';					
-                        //m3uStr += chanJwt + '\n';			
-			m3uStr += chansList[i].stream_url + '?' + chansList[i].hma + '\n\n';				
+            m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].channelMeta.id.toString() + '" ';
+// m3uStr += 'tvg-logo="' + chansList[i].channelMeta.logo + '" ';
+m3uStr += 'group-title="' + (chansList[i].channelMeta.genre[0] !== "HD" ? chansList[i].channelMeta.genre[0] : chansList[i].channelMeta.genre[1]) + '", ';
+m3uStr += chansList[i].channelMeta.channelName + '\n';
+m3uStr += '#KODIPROP:inputstream.adaptive.license_type=com.widevine.alpha' + '\n';
+m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].detail.dashWidewineLicenseUrl + '&ls_session=';
+m3uStr += chanJwt + '\n';
+//m3uStr += replacestrings('https://beta-ts-sable.vercel.app/index.mpd?id=' + chansList[i].channelMeta.id) + '\n\n';
+m3uStr += replacestrings(`https://rftv.wtf/tp/tplay.mpd?contentID=${chansList[i].channelMeta.id}`) + '\n\n';
+m3uStr += replacestrings('https://toxicify.pro/peace/kfc/' + chansList[i].channelMeta.id + '.mpd') + '\n\n';
+//m3uStr += replacestrings('https://tp.snehiptv-s7.workers.dev/' + chansList[i].channelMeta.id + '.mpd') + '\n\n';
+			//m3uStr += chansList[i].channel_url + '\n\n';
+			 //m3uStr += replacestrings(`https://beta-ts-sable.vercel.app/index.mpd?ID=${chansList[i].channelMeta.id}`) + '\n\n';
+					
 			
         }
         console.log('all done!');
