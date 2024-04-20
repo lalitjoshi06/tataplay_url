@@ -15,8 +15,6 @@ b) npm run dev
 3) Enjoy!
 
 **Note : **use this playlist on OTT Navigator and set to reload data to 10 min bcz hmac expires in every 10 min for most of channels.
-         Need to fix for vercel
-         use render for now
-
+        
 Special thanks to CodeCrafters for their API.
 
