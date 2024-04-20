@@ -265,12 +265,12 @@ const generateM3u = async (ud) => {
                 chanJwt = await getJWT(paramsForJwt, ud);
                 chanJwt = chanJwt.token;
                 for (let i = 0; i < chansList.length; i++) {
-                        m3uStr += '#EXTINF:-1 tvg-id="' + chansList[i].id.toString() + '" tvg-name="' + chansList[i].name + '" ';                               
-			m3uStr += 'group-title=\"' + (chansList[i].group_title) + '\", tvg-logo=' + chansList[i].tvg_logo + '\n';
-                        m3uStr += '#KODIPROP:inputstream.adaptive.license_type=clearkey' + '\n';						
-                        m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].clearkey + '\n';					
-                        //m3uStr += chanJwt + '\n';			
-			m3uStr += chansList[i].stream_url + '?' + chansList[i].hma + '\n\n';				
+                        m3uStr += '#EXTINF:-1  tvg-id=\"' + chansList[i].id.toString() + '\"  ';                        
+                        m3uStr += 'group-title=\"' + (chansList[i].group_title) + '\",   ' + chansList[i].name + '\n';
+                        m3uStr += '#KODIPROP:inputstream.adaptive.license_type=clearkey' + '\n';
+                        m3uStr += '#KODIPROP:inputstream.adaptive.license_key=' + chansList[i].clearkey + '\n';	
+                        //m3uStr += chanJwt + '\n';
+			m3uStr += chansList[i].stream_url + '?' + chansList[i].hma + '\n\n';			
 			
         }
         console.log('all done!');
