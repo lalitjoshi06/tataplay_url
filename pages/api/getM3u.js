@@ -135,28 +135,16 @@ let chanIdsStr = '';
 
 // Fetch HMAC value
 let hmacValue;
-let hmacData = await fetch("https://tplayapi.code-crafters.app/321codecrafters/hmac.json")
-    .then(response => response.json())
+
+fetch("https://tplayapi.code-crafters.app/321codecrafters/hmac.json")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
-        let hdneaValue = data.data.hmac.hdnea.value;
-        hmacValue = hdneaValue.replace(/"/g, ''); // Remove double quotes from the value
-        return {
-            type: "TATAPLAY HMAC API",
-            author: "Team CodeCrafters",
-            community: "https://t.me/realcodecrafters",
-            data: {
-                hmac: {
-                    hdnea: {
-                        value: hdneaValue,
-                        validity: "10 minutes"
-                    },
-                    hdtl: {
-                        value: data.data.hmac.hdtl.value,
-                        validity: "24 Hours"
-                    }
-                }
-            }
-        };
+        hmacValue = data.data.hmac.hdnea.value;
     })
     .catch(error => {
         console.error('Error fetching and rearranging HMAC data:', error);
