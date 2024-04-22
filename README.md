@@ -16,6 +16,7 @@ b) npm run dev
 
 **Note : **use this playlist on OTT Navigator and set to reload data to 10 min bcz hmac expires in every 10 min for most of channels.
            There is some issue to create dynamic url on Vercel use render for dynamic url, and if you know how to create manually then create manually.
+           or run it locally on pc you will get dynamic URL.
         
 Special thanks to CodeCrafters for their API.
 
