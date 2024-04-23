@@ -75,7 +75,7 @@ useEffect(() => {
     return () => {
         // Cleanup code here if necessary
     };
-});
+}, [theUser, token]);
 
 
 
