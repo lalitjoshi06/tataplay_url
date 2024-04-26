@@ -180,7 +180,7 @@ while (chanIds.length > 0) {
                         key_extracted: channel.key_extracted,
                         pssh: channel.pssh,
                         //clearkey: channel.clearkey?.hex,
-						clearkey: channel.clearkeys ? JSON.stringify(channel.clearkeys[0].base64) : null,
+						clearkey: channel.clearkeys ? JSON.stringify(channel.clearkeys[0].hex) : null,
                         hma: hmacValue // Adding HMAC value to the channel data
                     };
 					
