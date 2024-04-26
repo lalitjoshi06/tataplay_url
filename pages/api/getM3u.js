@@ -172,7 +172,7 @@ while (chanIds.length > 0) {
                         tvg_logo: channel.logo_url,
                         stream_url: channel.manifest_url,
                         license_url: channel.license_url,
-                        stream_headers: channel.manifest_headers,
+                        stream_headers: channel.manifest_headers ? (channel.manifest_headers['User-Agent'] || JSON.stringify(channel.manifest_headers)) : null,
                         drm: channel.drm,
                         is_mpd: channel.is_mpd,
                         kid_in_mpd: channel.kid_in_mpd,
