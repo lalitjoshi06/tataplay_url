@@ -168,7 +168,7 @@ while (chanIds.length > 0) {
                         id: channel.id,
                         name: channel.name,
                         tvg_id: channel.tvg_id,
-                        group_title: channel.category,
+                        group_title: channel.genres,
                         tvg_logo: channel.logo_url,
                         stream_url: channel.manifest_url,
                         license_url: channel.license_url,
