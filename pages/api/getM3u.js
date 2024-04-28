@@ -226,7 +226,7 @@ const generateM3u = async (ud) => {
             let jwtTokens = [];
             if (chansList.length > 0) {
                 //m3uStr = '#EXTM3U    x-tvg-url="http://botallen.live/epg.xml.gz"\n\n';4
-                m3uStr = '#EXTM3U    x-tvg-url="https://github.com/mitthu786/tvepg/blob/main/tataplay/epg.xml.gz"\n\n';
+                m3uStr = '#EXTM3U    x-tvg-url="https://raw.githubusercontent.com/mitthu786/tvepg/main/tataplay/epg.xml.gz"\n\n';
                 let chanJwt;
                 let paramsForJwt = {
                     "action": "stream",
