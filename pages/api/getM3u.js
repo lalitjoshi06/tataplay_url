@@ -163,26 +163,26 @@ while (chanIds.length > 0) {
                 // Flatten the array of arrays
                 const flatChannels = cData.data.channels.flat();
                 // Rearrange and push the data into the result array
-                flatChannels.forEach(channel => {
-                   let rearrangedChannel = {
-                        id: channel.id,
-                        name: channel.name,
-                        tvg_id: channel.tvg_id,
-                        group_title: channel.genres,
-                        tvg_logo: channel.logo_url,
-                        stream_url: channel.manifest_url,
-                        license_url: channel.license_url,
-                        stream_headers: channel.manifest_headers ? (channel.manifest_headers['User-Agent'] || JSON.stringify(channel.manifest_headers)) : null,
-                        drm: channel.drm,
-                        is_mpd: channel.is_mpd,
-                        kid_in_mpd: channel.kid_in_mpd,
-                        hmac_required: channel.hmac_required,
-                        key_extracted: channel.key_extracted,
-                        pssh: channel.pssh,
-                        //clearkey: channel.clearkey?.hex,
-						clearkey: channel.clearkeys ? channel.clearkeys[0].hex.toString() : null,
-                        hma: hmacValue // Adding HMAC value to the channel data
-                    };
+               flatChannels.forEach(channel => {
+                let firstGenre = channel.genres && channel.genres.length > 0 ? channel.genres[0] : null;
+                let rearrangedChannel = {
+                    id: channel.id,
+                    name: channel.name,
+                    tvg_id: channel.tvg_id,
+                    group_title: firstGenre,
+                    tvg_logo: channel.logo_url,
+                    stream_url: channel.manifest_url,
+                    license_url: channel.license_url,
+                    stream_headers: channel.manifest_headers ? (channel.manifest_headers['User-Agent'] || JSON.stringify(channel.manifest_headers)) : null,
+                    drm: channel.drm,
+                    is_mpd: channel.is_mpd,
+                    kid_in_mpd: channel.kid_in_mpd,
+                    hmac_required: channel.hmac_required,
+                    key_extracted: channel.key_extracted,
+                    pssh: channel.pssh,
+                    clearkey: channel.clearkeys ? JSON.stringify(channel.clearkeys[0].base64) : null,
+                    hma: hmacValue
+                };
 					
                     result.push(rearrangedChannel);
                 });
