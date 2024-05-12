@@ -220,7 +220,7 @@ const generateM3u = async (ud) => {
         let userChanDetails = await getUserChanDetails(allChans.list);
 
           let m3uStr = '';
-        if (userChanDetails.err === null) {
+        if (userChanDetails.err === null) {EXTINF:-1 tvg-logo="https://i.ibb.co/0CYZ3ff/IMG-20240110-202959.png" group-title="𝗝𝗢𝗜𝗡 𝗢𝗨𝗥 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠",𝗖𝗢𝗢𝗟 𝗜𝗣𝗧𝗩 📺[t.me/Cool_IPTV]🚧
             let chansList = userChanDetails.list
             console.log(JSON.stringify(chansList.length));
             let jwtTokens = [];
